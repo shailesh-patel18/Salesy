@@ -1,0 +1,10 @@
+node_modules/
+.next/
+__pycache__/
+*.pyc
+.streamlit/
+.env*
+build/
+dist/
+*.exe
+github_setup.py

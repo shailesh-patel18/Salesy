@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 2, 6, 23;
+  --background-end-rgb: 15, 23, 42;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer components {
+  .glassmorphism {
+    @apply bg-slate-900/40 backdrop-blur-md border border-slate-700/50 shadow-2xl;
+  }
+}
+
+.prose {
+  color: #94a3b8;
+  max-width: 65ch;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  color: #f1f5f9;
+  font-weight: 700;
+}
+
+.prose strong {
+  color: #e2e8f0;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.prose code {
+  color: #818cf8;
+  background-color: #1e293b;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+}
