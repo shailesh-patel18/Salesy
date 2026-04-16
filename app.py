@@ -5,9 +5,12 @@ import json
 from duckduckgo_search import DDGS
 import time
 import io
+import os
 
 # --- Page Config ---
 st.set_page_config(page_title="SalesCo-Pilot Free", page_icon="🚀", layout="wide")
+
+# (Keep existing styling)
 
 # Custom UI Styling (Premium B2B Palette)
 st.markdown("""
@@ -91,20 +94,38 @@ if mode == "Local (Ollama)":
     cloud_key = None
 else:
     cloud_provider = st.sidebar.selectbox("Provider", ["Groq (Free/Fast)", "Google Gemini"])
-    cloud_key = st.sidebar.text_input(f"Enter {cloud_provider} API Key", type="password")
+    
+    # Check for keys in: 1. ENV, 2. Secrets
+    env_key = os.getenv("GROQ_API_KEY", "") if cloud_provider == "Groq (Free/Fast)" else ""
+    secret_key = ""
+    if cloud_provider == "Groq (Free/Fast)" and "GROQ_API_KEY" in st.secrets:
+        secret_key = st.secrets["GROQ_API_KEY"]
+    
+    final_default = secret_key if secret_key else env_key
+    cloud_key = st.sidebar.text_input(f"Enter {cloud_provider} API Key", value=final_default, type="password")
+    
+    if final_default:
+        st.sidebar.success(f"✅ Key loaded from {'Secrets' if secret_key else 'Environment'}")
     
 st.sidebar.markdown("---")
 st.sidebar.warning("Note: Enrichment accuracy is 50-70%.")
 
 # Helper to run the selected brain
 def run_ai(prompt):
+    # Try to get key from sidebar first, then environment, then Streamlit Secrets
+    final_key = cloud_key
+    if not final_key:
+        final_key = os.getenv("GROQ_API_KEY")
+    if not final_key and "GROQ_API_KEY" in st.secrets:
+        final_key = st.secrets["GROQ_API_KEY"]
+
     if mode == "Local (Ollama)":
         return query_ollama(prompt, model=ollama_model)
     else:
-        if not cloud_key:
-            st.error("Please enter your Cloud API Key in the sidebar!")
+        if not final_key:
+            st.error("Please enter your Cloud API Key in the sidebar or add it to Secrets!")
             st.stop()
-        return query_cloud_ai(prompt, cloud_provider, cloud_key)
+        return query_cloud_ai(prompt, cloud_provider, final_key)
 
 # --- Module 1: ICP Filter ---
 if module == "🎯 1. ICP Filter":
