@@ -86,7 +86,7 @@ st.sidebar.markdown("---")
 module = st.sidebar.radio("Navigation", ["🎯 1. ICP Filter", "🔍 2. Executive Enricher"])
 st.sidebar.markdown("---")
 st.sidebar.subheader("Brain Settings")
-mode = st.sidebar.selectbox("Model Type", ["Local (Ollama)", "Cloud (Free API)"])
+mode = st.sidebar.selectbox("Model Type", ["Cloud (Free API)", "Local (Ollama)"])
 
 if mode == "Local (Ollama)":
     ollama_model = st.sidebar.text_input("Ollama Model", value="llama3.2")
